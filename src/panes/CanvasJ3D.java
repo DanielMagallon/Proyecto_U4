@@ -17,7 +17,11 @@ import static main.Run.*;
 
 public class CanvasJ3D extends JPanel
 {
-    public SelecctionListener selecctionListener;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public SelecctionListener selecctionListener;
     public ShapeJ3D shape3D;
     private boolean arrastrar=false,firstTime=true;
 
