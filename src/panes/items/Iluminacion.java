@@ -3,24 +3,35 @@ package panes.items;
 import main.Run;
 import panes.PanelItem;
 import static_props.AppProps;
+//import sun.tools.tree.NewInstanceExpression;
 
 import javax.media.j3d.*;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.awt.*;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 public class Iluminacion extends PanelItem{
 
-    private JLabel labelAmbiente,lblDireccional,lblPunto,auxLabel;
+    private JLabel labelAmbiente,lblDireccional,lblPunto,auxLabel,colorseleccionado;
     private JPanel panelCont;
     private static JCheckBox iluminado;
-
+    JButton elegir;
+	static Color3f c= new Color3f(1.0f,1.0f,0.2f);
+	Color colordondolabel;
+	 private JSlider jsliderpuntox,jsliderpuntoy;
     public static PanelAmbiente panelAmbiente;
     public static PanelDireccional panelDireccional;
     public static PanelPuntoLuz panelPuntoLuz;
+    float x=0;
+	float y=0;
+	float z=0;
 
     public Iluminacion() {
         super(new BorderLayout());
@@ -78,6 +89,73 @@ public class Iluminacion extends PanelItem{
             });
 
             labelAmbiente.setBorder(BorderFactory.createLineBorder(Color.white));
+            colorseleccionado=new JLabel("        ");
+            colorseleccionado.setOpaque(true);
+            colorseleccionado.setSize(300, 200);
+    		colordondolabel= Color.gray;
+    		colorseleccionado.setBackground(colordondolabel);
+    		JPanel ps1=new JPanel(new GridLayout(1,1));
+    		TitledBorder tb1=new TitledBorder("Punto de luz eje x");
+    		tb1.setTitleJustification(TitledBorder.CENTER);
+    		ps1.setBorder(tb1);
+    		
+    		jsliderpuntox=new JSlider(JSlider.HORIZONTAL,0,200,100);
+    		jsliderpuntox.setMinorTickSpacing(10);
+    		jsliderpuntox.setMajorTickSpacing(30);
+    		jsliderpuntox.setPaintLabels(true);
+    		jsliderpuntox.setPaintTicks(true);
+    		ps1.add(jsliderpuntox);
+    		JPanel ps2=new JPanel(new GridLayout(1,1));
+    		TitledBorder tb2=new TitledBorder("Punto de luz eje y");
+    		tb2.setTitleJustification(TitledBorder.CENTER);
+    		ps2.setBorder(tb2);
+    		jsliderpuntoy=new JSlider(JSlider.HORIZONTAL,0,200,100);
+    		jsliderpuntoy.setMinorTickSpacing(10);
+    		jsliderpuntoy.setMajorTickSpacing(30);
+    		jsliderpuntoy.setPaintLabels(true);
+    		jsliderpuntoy.setPaintTicks(true);
+    		ps2.add(jsliderpuntoy);
+           
+            elegir= new JButton("Color de iluminación:");
+  		  elegir.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent e) {
+					c=elegir();
+					colorseleccionado.setBackground(colordondolabel);
+						panelAmbiente.light.setColor(c);
+						panelDireccional.light.setColor(c);
+						panelPuntoLuz.light.setColor(c);
+					
+					
+				}
+			});
+  		jsliderpuntox.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				// TODO Auto-generated method stub
+				//F.rotacionx(S1.getValue());
+				if(jsliderpuntox.getValue()<100) {
+					x=(float)-((-(float)jsliderpuntox.getValue()/100)+1);
+					panelPuntoLuz.castLigth().setPosition(new Point3f(x,y,z));
+				
+				}else{
+					x=(float)(((float)jsliderpuntox.getValue()/100)-1);
+					panelPuntoLuz.castLigth().setPosition(new Point3f(x,y,z));
+				}
+			}
+		});
+  		jsliderpuntoy.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+		
+				if(jsliderpuntoy.getValue()<100) {
+					y=(float)-((-(float)jsliderpuntoy.getValue()/100)+1);
+					panelPuntoLuz.castLigth().setPosition(new Point3f(x,y,z));
+				
+				}else{
+					y=(float)(((float)jsliderpuntoy.getValue()/100)-1);
+					panelPuntoLuz.castLigth().setPosition(new Point3f(x,y,z));
+				}
+			}
+		});
             JPanel panelLabels = new JPanel() {{
                 setLayout(new GridLayout(4, 1));
                 setOpaque(false);
@@ -87,12 +165,35 @@ public class Iluminacion extends PanelItem{
                 add(lblPunto);
                 add(iluminado);
             }};
+            
+            JPanel panelConfigs = new JPanel() {{
+                setLayout(new FlowLayout());
+                setOpaque(false);
+                setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
+                add(elegir);
+                add(colorseleccionado);
+                add(ps1);
+                add(ps2);
+                
+            }};
 
             add(panelLabels,"West");
+            add(panelConfigs,"East");
+            
         }
 
     }
-
+    public Color3f elegir()  {
+		Color initialcolor=Color.RED; 
+		Color3f coloriluminacion;
+		colordondolabel =JColorChooser.showDialog(this, "Escoge un color",initialcolor);
+		float red= colordondolabel.getRed()/255f;
+		float blue= colordondolabel.getBlue()/255f;
+		float green= colordondolabel.getGreen()/255f;
+		coloriluminacion= new Color3f(red,green,blue);
+		
+		return coloriluminacion;
+	}
     public static boolean isLigth(){
         return iluminado.isSelected();
     }
@@ -102,8 +203,9 @@ public class Iluminacion extends PanelItem{
         protected BoundingSphere limite;
         protected double xpoint,ypoint,zpoint,radius;
         protected Color3f color3f;
+        
         protected Light light;
-
+        
          public PanelIlum() {
             setOpaque(false);
             cbox = new JCheckBox("Habilitar");
@@ -137,7 +239,7 @@ public class Iluminacion extends PanelItem{
         public PanelAmbiente() {
             super();
             radius=1;
-            color3f = new Color3f(0.2f,0.2f,0.2f);
+            color3f =c;
 
             light = new AmbientLight();
             initLight();
@@ -153,8 +255,7 @@ public class Iluminacion extends PanelItem{
             return (AmbientLight) light;
           }
     }
-
-    public static class PanelDireccional extends PanelIlum{
+         public static class PanelDireccional extends PanelIlum{
 
         Vector3f direction;
         float xdir,ydir,zdir;
@@ -162,7 +263,7 @@ public class Iluminacion extends PanelItem{
         public PanelDireccional() {
             super();
             radius=1;
-            color3f = new Color3f(0.5f,0.5f,0);
+            color3f = c;
 
             light = new DirectionalLight();
             initLight();
@@ -193,13 +294,13 @@ public class Iluminacion extends PanelItem{
             xpoint=0.4;
             ypoint=0.3;
 
-            color3f = new Color3f(0,0,0);
+            color3f = c;
 
             light = new PointLight();
             light.setEnable(false);
             initLight();
 
-            positionPoint = new Point3f(0,0,0);
+            positionPoint = new Point3f(-0.3f,-0.3f,0);
             attenuattionPoint = new Point3f(1,0,0);
 
             light.setColor(color3f);
