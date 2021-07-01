@@ -32,10 +32,10 @@ public class AppProps
 
     public static Color FG_NORMAL_TEXT = new Color(0xFFFFFF);
 
-    public static JLabel createLabelFor(String text, LabelHandler handler)
+    public static JLabel createLabelFor(String text, LabelHandler handler,LabelHandler onEnteredHandler)
     {
         JLabel lbl = new JLabel(text);
-        lbl.setCursor(handCursor);
+
         lbl.setHorizontalAlignment(JLabel.CENTER);
         lbl.addMouseListener(new MouseAdapter() {
             @Override
@@ -43,6 +43,11 @@ public class AppProps
                 handler.labelCallback(
                         (JLabel) mouseEvent.getComponent()
                 );
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                onEnteredHandler.labelCallback((JLabel) e.getComponent());
             }
         });
         lbl.setForeground(FG_NORMAL_TEXT);

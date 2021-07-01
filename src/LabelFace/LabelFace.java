@@ -6,12 +6,12 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import static static_props.AppProps.handCursor;
-import static static_props.AppProps.FG_NORMAL_TEXT;
+import static static_props.AppProps.*;
 
 public class LabelFace extends JLabel
 {
     public int indexStart,indexEnd;
+    public static LabelFace labelAux;
 
     public LabelFace(String text, LabelHandler handler,int start, int end) {
         super(text);
@@ -22,6 +22,13 @@ public class LabelFace extends JLabel
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
+
+                if(labelAux!=null)
+                    labelAux.setForeground(FG_NORMAL_TEXT);
+
+                LabelFace.this.setForeground(BG_CONTORNO);
+                labelAux=LabelFace.this;
+
                 handler.labelCallback(LabelFace.this);
             }
         });

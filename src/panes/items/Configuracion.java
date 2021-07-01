@@ -2,6 +2,7 @@ package panes.items;
 
 import bin.shape3d.abstracts.Face3D;
 
+import bin.shape3d.abstracts.ShapeJ3D;
 import panes.PanelItem;
 import static_props.AppProps;
 import static_props.ImageLoader;
@@ -37,7 +38,10 @@ public class Configuracion extends PanelItem
        
         lblExportSelect = AppProps.createLabelFor("Exportar seleccion",()->canvas3D.selecctionListener.prepare());
         lblExportSelect.setIcon(ImageLoader.escseleciDI);
-        lblFill = AppProps.createLabelFor("Relleno",()->canvas3D.shape3D.updateShapeColor());
+        lblFill = AppProps.createLabelFor("Relleno",()-> {
+            ShapeJ3D.filled=!ShapeJ3D.filled;
+            canvas3D.shape3D.updateShapeColor();
+        });
         lblFill.setIcon(ImageLoader.paintDI);
         lblReset = AppProps.createLabelFor("Restaurar",()->{
 //            abstractShape3D.setXAngulo(0);

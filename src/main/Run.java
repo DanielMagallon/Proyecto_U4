@@ -1,6 +1,7 @@
 package main;
 
 import LabelFace.LabelFace;
+import bin.shape3d.abstracts.ShapeJ3D;
 import frame.DefaultFrame;
 import modals.*;
 import modals.NotifyImage;
@@ -10,6 +11,7 @@ import panes.PanelItem;
 import panes.items.*;
 import panes.menu.PanelMenu;
 import static_props.AppProps;
+import static_props.ImageLoader;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -94,6 +96,14 @@ public class Run
         });
 
         canvas3D = new CanvasJ3D();
+        canvas3D.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if(ShapeJ3D.fillPoint){
+                    canvas3D.setCursor(ImageLoader.fillCorrectCursor);
+                }else canvas3D.setCursor(null);
+            }
+        });
         colores = new Colores();
         caras = new Caras();
         panelMenus = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0))
@@ -152,12 +162,18 @@ public class Run
    
     }
 
+    private static LabelFace auxFace;
+
+    public static void updateColorsFace(){
+        faceProperties.showFaceProps(auxFace);
+    }
+
     public static void faceHandler(LabelFace face)
     {
+        auxFace = face;
+
         if(faceProperties.closed) {
             frame.getContentPane().add(faceProperties, "East");
-        }else{
-            faceProperties.updateProps();
         }
         faceProperties.showFaceProps(face);
         frame.getContentPane().validate();

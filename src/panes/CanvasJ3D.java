@@ -96,45 +96,8 @@ public class CanvasJ3D extends JPanel
         addMouseListener(selecctionListener);
         addMouseMotionListener(selecctionListener);
 
-        addMouseWheelListener(e -> {
-            int sentRot = e.getWheelRotation();
-            if (sentRot > 0) {
-                shape3D.scale(1.2);
-            } else {
-                if (sentRot < 0) {
-                    shape3D.scale(.95);
-                }
-            }
-            repaint();
-        });
-
         create3D();
 
-        canvas.addMouseListener(new MouseAdapter() {
-                             public void mousePressed(MouseEvent e) {
-                                 if (!exportImage) {
-                                     int cx = e.getX(), cy = e.getY();
-                                     arrastrar = true;
-                                 }
-                             }
-
-                             @Override
-                             public void mouseEntered(MouseEvent mouseEvent) {
-                                 canvas.requestFocus();
-                             }
-                         }
-        );
-
-        canvas.addMouseMotionListener(new MouseMotionAdapter() {
-            public void mouseDragged(MouseEvent e) {
-                if (arrastrar) {
-                    //sipuedes arrastrar la figura
-                    int cx = e.getX(), cy = e.getY();
-                    shape3D.mover(cx,cy);
-                    repaint();
-                }
-            }
-        });
     }
 
     private Canvas3D canvas;

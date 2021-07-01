@@ -12,6 +12,8 @@ import javax.swing.*;
 import javax.vecmath.*;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,8 +36,10 @@ public class ShapeJ3D
     public HashMap<Integer,Color3f> colorList = new HashMap<>(){{
         put(0,(new Color3f(1,0,0)));//0
         put(1,(new Color3f(0,1,0)));//1
-        put(3,new Color3f(0,0,1));//2
-        put(2,new Color3f(1,1,0));//3
+        put(2,new Color3f(0,0,1));//2
+        put(3,new Color3f(1,1,0));//3
+        put(4,new Color3f(1,1,1));//3
+        put(5,new Color3f(0,1,1));//4
     }};
 
     public int secColor[] = {0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,1,1,1,1,1, 2,2,2,2,  3,3,3,3,
@@ -46,8 +50,6 @@ public class ShapeJ3D
     }
 
     private Font fontIcon = new Font(Font.MONOSPACED,Font.PLAIN,24);
-    private boolean deleting=false;
-    private JLabel lblRemove,lblAdd;
     private  JPanel jpanel;
     private int indexLbl=5;
 
@@ -86,6 +88,7 @@ public class ShapeJ3D
 
     int tiras[]={12,12,4,4,4,4,4,4,4,4,4,4,4,4};
 
+
     public JPanel caraspanel(){
         JPanel panel = new JPanel(new FlowLayout());
         panel.setOpaque(false);
@@ -101,67 +104,88 @@ public class ShapeJ3D
         return panel;
     }
 
-    private void addListener(){
-        if(!deleting){
-            Color color = JColorChooser.showDialog(null,"Seleccione un color",
-                    Color.black);
-
-            if(color!=null){
-                colorList.put(indexLbl,new Color3f(color.getRed()/255f,color.getGreen()/255f,
-                        color.getBlue()/255f));
-
-                addLblColor(indexLbl);
-                jpanel.validate();
-                jpanel.repaint();
-                indexLbl++;
-            }
-        }
-    }
+    public static boolean fillPoint;
+    public static int keyColor;
 
     private void addLblColor(int key){
         JLabel lbl = AppProps.createLabelFor("",(label)->{
-            if(deleting){
-                jpanel.remove(label);
-                colorList.remove(Integer.parseInt(label.getName()));
-                jpanel.validate();
-                jpanel.repaint();
-            }else{
+            if(cbox.isSelected()){
+                fillPoint=false;
+                btnAplicarTodo.setEnabled(false);
+                btnCanc.setEnabled(false);
 
+                Color color = JColorChooser.showDialog(null,"Seleccione un color",
+                        Color.black);
+
+                if(color!=null) {
+                    int k = Integer.parseInt(label.getName());
+
+                    colorList.get(k).set(new Color3f(color.getRed() / 255f, color.getGreen() / 255f,
+                            color.getBlue() / 255f));
+                    label.setBackground(color);
+
+                    Run.updateColorsFace();
+                    updateShapeColor();
+                }
+            }else{
+                fillPoint=true;
+                cbox.setEnabled(false);
+                btnAplicarTodo.setEnabled(true);
+                btnCanc.setEnabled(true);
+                keyColor = Integer.parseInt(label.getName());
+            }
+        },labelHander->{
+            if(cbox.isSelected()){
+                labelHander.setCursor(ImageLoader.fillIncCursor);
+            }else {
+                labelHander.setCursor(AppProps.handCursor);
             }
         });
+
         lbl.setName(key+"");
         lbl.setOpaque(true);
         lbl.setBackground(colorList.get(key).get());
         lbl.setPreferredSize(new Dimension(30,30));
         jpanel.add(lbl);
-
-
     }
+
+    private JButton btnCanc,btnAplicarTodo;
+    private JCheckBox cbox;
 
     public JPanel getPanelColor(){
         jpanel = new JPanel(new FlowLayout());
         jpanel.setOpaque(false);
-
-        lblAdd = AppProps.createLabelFor("+",this::addListener);
-        lblAdd.setFont(fontIcon);
-        lblAdd.setPreferredSize(new Dimension(30,30));
-
-        lblRemove = AppProps.createLabelFor("-",()->{
-                if(!deleting){
-                    lblRemove.setForeground(Color.red);
-                    deleting=true;
-                    Run.frame.setCursor(ImageLoader.removeCursor);
-                }else{
-                    lblRemove.setForeground(AppProps.FG_NORMAL_TEXT);
-                    deleting=false;
-                    Run.frame.setCursor(null);
-                }
+        btnCanc = new JButton("Cancelar pintado");
+        btnAplicarTodo = new JButton("Aplicar color completamente");
+        btnAplicarTodo.setEnabled(false);
+        btnAplicarTodo.setBackground(AppProps.BG_SELECTED);
+        btnAplicarTodo.setForeground(AppProps.FG_NORMAL_TEXT);
+        btnAplicarTodo.addActionListener(a->{
+            fillPoint=false;
+            btnAplicarTodo.setEnabled(false);
+            btnCanc.setEnabled(false);
+            cbox.setEnabled(true);
+            Arrays.fill(secColor, keyColor);
+            updateShapeColor();
         });
-        lblRemove.setFont(fontIcon);
-        lblRemove.setPreferredSize(new Dimension(30,30));
+        btnCanc.setBackground(AppProps.BG_SELECTED);
+        btnCanc.setForeground(AppProps.FG_NORMAL_TEXT);
+        btnCanc.setEnabled(false);
+        btnCanc.addActionListener(a->
+        {
+            fillPoint=false;
+            btnAplicarTodo.setEnabled(false);
+            btnCanc.setEnabled(false);
+            cbox.setEnabled(true);
+        });
 
-        jpanel.add(lblAdd);
-        jpanel.add(lblRemove);
+        cbox = new JCheckBox("Camibar colores");
+        cbox.setForeground(AppProps.FG_NORMAL_TEXT);
+        cbox.setOpaque(false);
+
+        jpanel.add(btnAplicarTodo);
+        jpanel.add(btnCanc);
+        jpanel.add(cbox);
         colorList.keySet().forEach(this::addLblColor);
 
         return jpanel;
@@ -209,12 +233,20 @@ public class ShapeJ3D
         return objraiz;
     }
 
-    private boolean filled=true;
+    public void updateColorKey(int index){
+        secColor[index] = keyColor;
+        updateShapeColor();
+    }
+
+    public static boolean filled=true;
     public void updateShapeColor(){
 
         if(geometryInfo==null)
             geometryInfo = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
-        else geometryInfo.reset(GeometryInfo.POLYGON_ARRAY);
+        else {
+            geometryInfo.reset(GeometryInfo.POLYGON_ARRAY);
+
+        }
 
 //        NormalGenerator normalGenerator = new NormalGenerator();
 //        normalGenerator.generateNormals(geometryInfo);
@@ -224,9 +256,12 @@ public class ShapeJ3D
         geometryInfo.setStripCounts(tiras);
         Color3f[] cols = new Color3f[colorList.size()];
         AtomicInteger ind= new AtomicInteger();
+
+
         colorList.keySet().forEach(key->{
-            cols[ind.getAndIncrement()] = colorList.get(key);
+                  cols[ind.getAndIncrement()] = colorList.get(key);
         });
+
         geometryInfo.setColors(cols);
         geometryInfo.setColorIndices(secColor);
         shape3D.setGeometry(geometryInfo.getGeometryArray());
@@ -234,7 +269,6 @@ public class ShapeJ3D
         appearance.setPolygonAttributes(new PolygonAttributes(
                 filled ? PolygonAttributes.POLYGON_FILL : PolygonAttributes.POLYGON_LINE,
                 PolygonAttributes.CULL_NONE,0));
-        filled=!filled;
 
 
     }

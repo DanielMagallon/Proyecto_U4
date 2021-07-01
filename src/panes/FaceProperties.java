@@ -1,8 +1,11 @@
 package panes;
 
 import LabelFace.LabelFace;
+import bin.handlers.LabelHandler;
+import bin.shape3d.abstracts.ShapeJ3D;
 import main.Run;
 import static_props.AppProps;
+import static_props.ImageLoader;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -60,7 +63,7 @@ public class FaceProperties extends JPanel
         panel.setOpaque(false);
         panel.setBorder(titleBorder);
 
-        lblImagen = getLabelDemos(100,100,()->{
+        lblImagen = getLabelDemos(100,100,(lbl)->{
 
             if(fileChooser.showDialog(Run.frame,"Imagen de textura")==JFileChooser.APPROVE_OPTION){
                 try {
@@ -100,7 +103,7 @@ public class FaceProperties extends JPanel
         panel.setOpaque(false);
         panel.setBorder(titleBorder);
 
-        lblGradDe1 = getLabelDemos(50,100,()->{
+        lblGradDe1 = getLabelDemos(50,100,(lbl)->{
             Color color = JColorChooser.showDialog(this,"Escoge el primer color",defaultFaceColor);
             if(color!=null)
             {
@@ -108,7 +111,7 @@ public class FaceProperties extends JPanel
                 lblGradDe1.setBackground(color);
             }
         });
-        lblGradDe2 = getLabelDemos(50,100,()->{
+        lblGradDe2 = getLabelDemos(50,100,(lbl)->{
             Color color = JColorChooser.showDialog(this,"Escoge el segundo color",defaultFaceColor);
             if(color!=null)
             {
@@ -132,7 +135,7 @@ public class FaceProperties extends JPanel
         panelCenter.add(center);
     }
 
-    private JLabel getLabelDemos(int w, int h,Runnable handler){
+    private JLabel getLabelDemos(int w, int h, LabelHandler handler){
         JLabel lbl = new JLabel();
 
         lbl.setPreferredSize(new Dimension(w,h));
@@ -141,7 +144,7 @@ public class FaceProperties extends JPanel
         lbl.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
-                handler.run();
+                handler.labelCallback((JLabel) mouseEvent.getComponent());
             }
         });
 
@@ -178,12 +181,19 @@ public class FaceProperties extends JPanel
         panelColorS.setLayout(new GridLayout((count & 1)==0 ? count/3 : count/3+1,3,15,5));
 
         for(int i=labelF.indexStart; i<=labelF.indexEnd; i++){
-            JLabel lblColorDemos = getLabelDemos(100,100,()-> {
-                Color color = JColorChooser.showDialog(this, "Escoge un nuevo color", defaultFaceColor);
-                if (color != null) {
-//                this.face3D.fillFace = FaceFill.NORMAL;
-                    defaultFaceColor = color;
-//                this.face3D.bg_color = color;
+            JLabel lblColorDemos = getLabelDemos(100,100,(lbl)-> {
+                        if(ShapeJ3D.fillPoint){
+                            lbl.setBackground(Run.canvas3D.shape3D.colorList.get(ShapeJ3D.keyColor).get());
+                            Run.canvas3D.shape3D.updateColorKey(Integer.parseInt(lbl.getName()));
+                        }
+            });
+            lblColorDemos.setName(i+"");
+            lblColorDemos.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    if(ShapeJ3D.fillPoint){
+                        lblColorDemos.setCursor(ImageLoader.fillCorrectCursor);
+                    }else lblColorDemos.setCursor(ImageLoader.fillIncCursor);
                 }
             });
             lblColorDemos.setBackground(Run.canvas3D.shape3D.getRGBColor(i));

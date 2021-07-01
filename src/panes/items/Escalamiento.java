@@ -55,6 +55,7 @@ public class Escalamiento extends  PanelItem implements ChangeListener
     }
 
     public void updateScaleValue(int coord,boolean positive){
+        System.out.println(coord+"->"+positive);
         switch (coord)
         {
             case COORD_X:

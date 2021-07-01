@@ -24,9 +24,14 @@ public class ImageLoader {
     public static ImageIcon resetR = getImageIcon("material/restaurar26px.png");
 
     public static Cursor removeCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-                getSprite("cursors/remove.png"),new Point(0,0),"Remove"
+                getSprite("cursors/delete.png"),new Point(0,0),"Remove"
             );
-
+    public static Cursor fillCorrectCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+            getSprite("cursors/fillCorr.png"),new Point(0,0),"Remove"
+    );
+    public static Cursor fillIncCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+            getSprite("cursors/fillInc.png"),new Point(0,0),"Remove"
+    );
 
    
 
