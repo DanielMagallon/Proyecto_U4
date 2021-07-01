@@ -2,8 +2,10 @@ package bin.shape3d.abstracts;
 
 import LabelFace.LabelFace;
 import com.sun.j3d.utils.geometry.GeometryInfo;
+import com.sun.j3d.utils.geometry.NormalGenerator;
 import main.Run;
 import static_props.AppProps;
+import static_props.ImageLoader;
 
 import javax.media.j3d.*;
 import javax.swing.*;
@@ -27,15 +29,21 @@ public class ShapeJ3D
     private double scaleX=1,scaleY=1,scaleZ=1,rotY=45;
     private float transX=0,transY=0,transZ=0;
     private Appearance appearance;
-    private int secColor[];
     private GeometryInfo geometryInfo;
 
-    HashMap<Integer,Color3f> colorList = new HashMap<>(){{
+    public HashMap<Integer,Color3f> colorList = new HashMap<>(){{
         put(0,(new Color3f(1,0,0)));//0
         put(1,(new Color3f(0,1,0)));//1
         put(3,new Color3f(0,0,1));//2
         put(2,new Color3f(1,1,0));//3
     }};
+
+    public int secColor[] = {0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,1,1,1,1,1, 2,2,2,2,  3,3,3,3,
+            2,2,2,2,  3,3,3,3, 2,2,2,2,  3,3,3,3, 2,2,2,2,  3,3,3,3, 2,2,2,2,  3,3,3,3, 2,2,2,2,  3,3,3,3};
+
+    public Color getRGBColor(int index){
+        return colorList.get(secColor[index]).get();
+    }
 
     private Font fontIcon = new Font(Font.MONOSPACED,Font.PLAIN,24);
     private boolean deleting=false;
@@ -117,6 +125,8 @@ public class ShapeJ3D
                 colorList.remove(Integer.parseInt(label.getName()));
                 jpanel.validate();
                 jpanel.repaint();
+            }else{
+
             }
         });
         lbl.setName(key+"");
@@ -140,9 +150,11 @@ public class ShapeJ3D
                 if(!deleting){
                     lblRemove.setForeground(Color.red);
                     deleting=true;
+                    Run.frame.setCursor(ImageLoader.removeCursor);
                 }else{
                     lblRemove.setForeground(AppProps.FG_NORMAL_TEXT);
                     deleting=false;
+                    Run.frame.setCursor(null);
                 }
         });
         lblRemove.setFont(fontIcon);
@@ -160,9 +172,6 @@ public class ShapeJ3D
         transformGroup = new TransformGroup();
 
         BranchGroup objraiz=new BranchGroup();
-
-        secColor = new int[]{0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,1,1,1,1,1, 2,2,2,2,  3,3,3,3,
-                2,2,2,2,  3,3,3,3, 2,2,2,2,  3,3,3,3, 2,2,2,2,  3,3,3,3, 2,2,2,2,  3,3,3,3, 2,2,2,2,  3,3,3,3};
 
         TransformGroup tgr=new TransformGroup();
         trasnformRotator = new Transform3D();
@@ -206,6 +215,9 @@ public class ShapeJ3D
         if(geometryInfo==null)
             geometryInfo = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
         else geometryInfo.reset(GeometryInfo.POLYGON_ARRAY);
+
+//        NormalGenerator normalGenerator = new NormalGenerator();
+//        normalGenerator.generateNormals(geometryInfo);
 
         geometryInfo.setCoordinates(vertices);
         geometryInfo.setCoordinateIndices(secuencia);

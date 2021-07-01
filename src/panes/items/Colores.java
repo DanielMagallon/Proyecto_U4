@@ -11,7 +11,7 @@ public class Colores extends PanelItem
 {
     public Colores() {
         super(1, 1);
-        this.setBorder(BorderFactory.createEmptyBorder(15, 0, 5, 0));
+        this.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
         this.add(Run.canvas3D.shape3D.getPanelColor());
     }
 }

@@ -45,9 +45,9 @@ public class FaceProperties extends JPanel
         panelCenter.setPreferredSize(new Dimension(300,1200));
         panelCenter.setLayout(new GridLayout(3,1,0,10));
         add(panelCenter);
-        addImageSelection();
-        addColorSection();
-        addGradientSelection();
+        initPanelColor();
+//        addImageSelection();
+//        addGradientSelection();
     }
 
 
@@ -148,36 +148,48 @@ public class FaceProperties extends JPanel
         return lbl;
     }
 
-    private void addColorSection(){
-        JPanel panelColorS = new JPanel();
+    private  JPanel panelColorS;
+    private void initPanelColor(){
+        JPanel panelmain = new JPanel(new BorderLayout()){{
+            setPreferredSize(new Dimension(0,200));
+        }};
+        panelColorS = new JPanel(new BorderLayout());
+        panelColorS.setPreferredSize(new Dimension(0,200));
         TitledBorder titleBorder = new TitledBorder(BorderFactory.createLineBorder(Color.yellow));
         titleBorder.setTitleJustification(TitledBorder.CENTER);
         titleBorder.setTitleColor(AppProps.FG_NORMAL_TEXT);
         titleBorder.setTitle("Asignar color");
+        panelmain.setBorder(titleBorder);
+        JScrollPane sc = new JScrollPane(panelColorS);
+        sc.setOpaque(false);
         panelColorS.setOpaque(false);
-        panelColorS.setBorder(titleBorder);
+        panelmain.setOpaque(false);
+        panelColorS.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        sc.getViewport().setBackground(AppProps.CANVAS_BG);
+        panelmain.add(sc);
+        panelCenter.add(panelmain);
 
-        lblColorDemos = getLabelDemos(100,100,()-> {
-            Color color = JColorChooser.showDialog(this, "Escoge un nuevo color", defaultFaceColor);
-            if (color != null) {
+    }
+
+    private void addColorSections(){
+
+        int count = labelF.indexEnd - labelF.indexStart;
+        panelColorS.removeAll();
+        panelColorS.setLayout(new GridLayout((count & 1)==0 ? count/3 : count/3+1,3,15,5));
+
+        for(int i=labelF.indexStart; i<=labelF.indexEnd; i++){
+            JLabel lblColorDemos = getLabelDemos(100,100,()-> {
+                Color color = JColorChooser.showDialog(this, "Escoge un nuevo color", defaultFaceColor);
+                if (color != null) {
 //                this.face3D.fillFace = FaceFill.NORMAL;
-                defaultFaceColor = color;
+                    defaultFaceColor = color;
 //                this.face3D.bg_color = color;
-                Run.canvas3D.repaint();
-            }
-        });
-        panelColorS.add(lblColorDemos);
-        panelColorS.add(getButton("Sin color",()->{
-//            this.face3D.fillFace = FaceFill.NONE;
-            lblColorDemos.setBackground(null);
-            Run.canvas3D.repaint();
-        }));
-
-        JPanel center = new JPanel(new BorderLayout(1,1));
-        center.add(panelColorS);
-        center.setBorder(BorderFactory.createEmptyBorder(25,0,0,0));
-        center.setOpaque(false);
-        panelCenter.add(center);
+                }
+            });
+            lblColorDemos.setBackground(Run.canvas3D.shape3D.getRGBColor(i));
+            panelColorS.add(lblColorDemos);
+        }
+        panelColorS.validate();
     }
 
     private Color defaultFaceColor;
@@ -186,7 +198,7 @@ public class FaceProperties extends JPanel
     public void showFaceProps(LabelFace labelFace)
     {
         labelF = labelFace;
-        System.out.println(labelFace);
+        addColorSections();
         closed=false;
     }
 

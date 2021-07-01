@@ -103,7 +103,7 @@ public class Run
             add(new PanelMenu(panelRotacion,"Rotaciones",true));
             add(new PanelMenu(escalamiento,"Escalamiento"));
             add(new PanelMenu(traslacion,"Traslacion"));
-            add(new PanelMenu(colores,"Colores"));
+//            add(new PanelMenu(colores,"Colores"));
             add(new PanelMenu(caras,"Caras"));
             add(new PanelMenu(configuracion,"Configuracion"));
             add(seleccionayuda);
@@ -123,6 +123,7 @@ public class Run
         frame.getContentPane().add(panel,"North");
 
         frame.getContentPane().add(canvas3D);
+        frame.getContentPane().add(colores,"South");
 
 //        help = new Help(frame,true);
 
