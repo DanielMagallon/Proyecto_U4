@@ -1,6 +1,5 @@
 package panes;
 
-import bin.handlers.SelecctionListener;
 import bin.shape3d.abstracts.ShapeJ3D;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import panes.items.Iluminacion;
@@ -22,7 +21,6 @@ public class CanvasJ3D extends JPanel
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public SelecctionListener selecctionListener;
     public ShapeJ3D shape3D;
     private boolean arrastrar=false,firstTime=true;
 
@@ -36,32 +34,6 @@ public class CanvasJ3D extends JPanel
         setBorder(titledBorder);
         setBackground(AppProps.CANVAS_BG);
         shape3D = new ShapeJ3D();
-        selecctionListener = new SelecctionListener(this, () -> exportImage = false, () -> {
-
-            if (!showViews) {
-                if (firstTime) {
-                    JOptionPane.showMessageDialog(this, "Para seleccionar el area debe " +
-                            "mantener presionado el boton del mouse/touchpad\ny arrastrar hasta donde" +
-                            " se desee obtener la imagen. Las imagenes son guardadas\nautomaticamente en la carpeta" +
-                            " myimages.La cual esta en la raiz del proyecto.");
-                    firstTime = false;
-                }
-                exportImage = true;
-                selecctionListener.exporSelection = true;
-                canvas.setCursor(AppProps.areaSelect);
-                bufferedImage = new BufferedImage(canvas.getWidth(),
-                        canvas.getHeight(), BufferedImage.TYPE_INT_RGB);
-            }
-        });
-
-        AppProps.setActionPanel("RST", this, KeyEvent.VK_R, InputEvent.ALT_MASK,
-                () -> {
-//                    abstractShape3D.setXAngulo(0);
-//                    abstractShape3D.setYAngulo(0);
-//                    abstractShape3D.setZAngulo(0);
-//                    abstractShape3D.reset();
-
-                });
 
         AppProps.setActionPanel("SX", this, KeyEvent.VK_X, InputEvent.CTRL_MASK,
                 () -> escalamiento.updateScaleValue(AppProps.COORD_X,true));
@@ -98,18 +70,26 @@ public class CanvasJ3D extends JPanel
         AppProps.setActionPanel("RZ", this, KeyEvent.VK_Z, InputEvent.ALT_MASK,
                 () -> panelRotacion.actionKey("Z"));
 
-        addMouseListener(selecctionListener);
-        addMouseMotionListener(selecctionListener);
-
         create3D();
 
     }
 
     private Canvas3D canvas;
+
     private void create3D()
     {
         GraphicsConfiguration config= SimpleUniverse.getPreferredConfiguration();
         canvas=new Canvas3D(config);
+        canvas.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(ShapeJ3D.fillPoint){
+                    shape3D.backgroundGlobal.setColor(
+                            shape3D.colorList.get(ShapeJ3D.keyColor)
+                    );
+                }
+            }
+        });
         add(canvas,BorderLayout.CENTER);
         BranchGroup escena=shape3D.getBranchGroup();
         escena.addChild(Iluminacion.panelAmbiente.castLigth());

@@ -7,25 +7,18 @@ import main.Run;
 import static_props.AppProps;
 import static_props.ImageLoader;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class FaceProperties extends JPanel
 {
     private TitledBorder  titleBorder;
     public boolean closed=true;
     private JPanel panelCenter;
-    private JLabel lblColorDemos,lblGradDe1,lblGradDe2,lblImagen;
-    private String validExt[] = {"png", "jpg","jpeg","PNG","JPG","JPEG"};
-    private FileNameExtensionFilter filter = new FileNameExtensionFilter("IMG FILES", validExt);
-    private JFileChooser fileChooser = new JFileChooser();
 
     public FaceProperties()
     {
@@ -35,7 +28,6 @@ public class FaceProperties extends JPanel
         titleBorder.setTitleJustification(TitledBorder.CENTER);
         titleBorder.setTitleColor(AppProps.FG_NORMAL_TEXT);
 
-        fileChooser.setFileFilter(filter);
         setBorder(titleBorder);
         northPanel();
         panelCenter();
@@ -46,94 +38,11 @@ public class FaceProperties extends JPanel
         panelCenter.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         panelCenter.setOpaque(false);
         panelCenter.setPreferredSize(new Dimension(300,1200));
-        panelCenter.setLayout(new GridLayout(3,1,0,10));
+        panelCenter.setLayout(new GridLayout(1,1,0,10));
         add(panelCenter);
         initPanelColor();
-//        addImageSelection();
-//        addGradientSelection();
     }
 
-
-    private void addImageSelection(){
-        JPanel panel = new JPanel();
-        TitledBorder titleBorder = new TitledBorder(BorderFactory.createLineBorder(Color.yellow));
-        titleBorder.setTitleJustification(TitledBorder.CENTER);
-        titleBorder.setTitleColor(AppProps.FG_NORMAL_TEXT);
-        titleBorder.setTitle("Asignar textura imagen");
-        panel.setOpaque(false);
-        panel.setBorder(titleBorder);
-
-        lblImagen = getLabelDemos(100,100,(lbl)->{
-
-            if(fileChooser.showDialog(Run.frame,"Imagen de textura")==JFileChooser.APPROVE_OPTION){
-                try {
-                    BufferedImage bf = ImageIO.read(fileChooser.getSelectedFile());
-//                    face3D.setTexturePaint(0,0,Run.canvas3D.getWidth(),Run.canvas3D.getHeight(),bf);
-//                    lblImagen.setIcon(face3D.image);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
-
-        panel.add(lblImagen);
-        panel.add(getButton("Aplicar",()->{
-
-//            if(face3D.image!=null) {
-//                this.face3D.fillFace = FaceFill.IMAGE;
-//                Run.canvas3D.repaint();
-//            }else JOptionPane.showMessageDialog(this,"No se ha seleccionado alguna imagen",
-//                    "Error 404",JOptionPane.ERROR_MESSAGE);
-        }));
-
-        JPanel center = new JPanel(new BorderLayout(1,1));
-        center.add(panel);
-        center.setBorder(BorderFactory.createEmptyBorder(25,0,0,0));
-        center.setOpaque(false);
-        panelCenter.add(center);
-    }
-
-    private void addGradientSelection(){
-        JPanel panel = new JPanel();
-        TitledBorder titleBorder = new TitledBorder(BorderFactory.createLineBorder(Color.yellow));
-        titleBorder.setTitleJustification(TitledBorder.CENTER);
-        titleBorder.setTitleColor(AppProps.FG_NORMAL_TEXT);
-        titleBorder.setTitle("Asignar gradiente");
-        panel.setOpaque(false);
-        panel.setBorder(titleBorder);
-
-        lblGradDe1 = getLabelDemos(50,100,(lbl)->{
-            Color color = JColorChooser.showDialog(this,"Escoge el primer color",defaultFaceColor);
-            if(color!=null)
-            {
-//                this.face3D.updateColorsGradient(true,color);
-                lblGradDe1.setBackground(color);
-            }
-        });
-        lblGradDe2 = getLabelDemos(50,100,(lbl)->{
-            Color color = JColorChooser.showDialog(this,"Escoge el segundo color",defaultFaceColor);
-            if(color!=null)
-            {
-//                this.face3D.updateColorsGradient(false,color);
-                lblGradDe2.setBackground(color);
-            }
-        });
-
-        panel.add(lblGradDe1);
-        panel.add(lblGradDe2);
-        panel.add(getButton("Aplicar",()->{
-//            this.face3D.fillFace = FaceFill.GRADIENT;
-//            this.face3D.updateGradient(10,10, Run.canvas3D.getWidth(),Run.canvas3D.getHeight());
-            Run.canvas3D.repaint();
-        }));
-
-        JPanel center = new JPanel(new BorderLayout(1,1));
-        center.add(panel);
-        center.setBorder(BorderFactory.createEmptyBorder(25,0,0,0));
-        center.setOpaque(false);
-        panelCenter.add(center);
-    }
 
     private JLabel getLabelDemos(int w, int h, LabelHandler handler){
         JLabel lbl = new JLabel();
@@ -153,11 +62,8 @@ public class FaceProperties extends JPanel
 
     private  JPanel panelColorS;
     private void initPanelColor(){
-        JPanel panelmain = new JPanel(new BorderLayout()){{
-            setPreferredSize(new Dimension(0,200));
-        }};
+        JPanel panelmain = new JPanel(new BorderLayout());
         panelColorS = new JPanel(new BorderLayout());
-        panelColorS.setPreferredSize(new Dimension(0,200));
         TitledBorder titleBorder = new TitledBorder(BorderFactory.createLineBorder(Color.yellow));
         titleBorder.setTitleJustification(TitledBorder.CENTER);
         titleBorder.setTitleColor(AppProps.FG_NORMAL_TEXT);

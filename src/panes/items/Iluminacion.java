@@ -96,10 +96,12 @@ public class Iluminacion extends PanelItem{
     		colorseleccionado.setBackground(colordondolabel);
     		JPanel ps1=new JPanel(new GridLayout(1,1));
     		TitledBorder tb1=new TitledBorder("Punto de luz eje x");
+    		tb1.setTitleColor(AppProps.BG_CONTORNO);
     		tb1.setTitleJustification(TitledBorder.CENTER);
     		ps1.setBorder(tb1);
     		
     		jsliderpuntox=new JSlider(JSlider.HORIZONTAL,0,200,100);
+    		jsliderpuntox.setOpaque(false);
     		jsliderpuntox.setMinorTickSpacing(10);
     		jsliderpuntox.setMajorTickSpacing(30);
     		jsliderpuntox.setPaintLabels(true);
@@ -107,6 +109,7 @@ public class Iluminacion extends PanelItem{
     		ps1.add(jsliderpuntox);
     		JPanel ps2=new JPanel(new GridLayout(1,1));
     		TitledBorder tb2=new TitledBorder("Punto de luz eje y");
+            tb2.setTitleColor(AppProps.BG_CONTORNO);
     		tb2.setTitleJustification(TitledBorder.CENTER);
     		ps2.setBorder(tb2);
     		jsliderpuntoy=new JSlider(JSlider.HORIZONTAL,0,200,100);
@@ -114,9 +117,10 @@ public class Iluminacion extends PanelItem{
     		jsliderpuntoy.setMajorTickSpacing(30);
     		jsliderpuntoy.setPaintLabels(true);
     		jsliderpuntoy.setPaintTicks(true);
+    		jsliderpuntoy.setOpaque(false);
     		ps2.add(jsliderpuntoy);
            
-            elegir= new JButton("Color de iluminación:");
+            elegir= new JButton("Color de iluminacion:");
   		  elegir.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {
@@ -165,7 +169,16 @@ public class Iluminacion extends PanelItem{
                 add(lblPunto);
                 add(iluminado);
             }};
-            
+
+            {
+                elegir.setBackground(AppProps.BG_SELECTED);
+                elegir.setForeground(Color.white);
+                jsliderpuntox.setForeground(Color.white);
+                jsliderpuntoy.setForeground(Color.white);
+                ps1.setOpaque(false);
+                ps2.setOpaque(false);
+            }
+
             JPanel panelConfigs = new JPanel() {{
                 setLayout(new FlowLayout());
                 setOpaque(false);
@@ -208,8 +221,9 @@ public class Iluminacion extends PanelItem{
         
          public PanelIlum() {
             setOpaque(false);
-            cbox = new JCheckBox("Habilitar");
+            cbox = new JCheckBox();
             cbox.setOpaque(false);
+            setBorder(BorderFactory.createEmptyBorder(20,0,0,0));
             cbox.setForeground(AppProps.FG_NORMAL_TEXT);
             add(cbox);
             cbox.addChangeListener(c->
@@ -241,6 +255,7 @@ public class Iluminacion extends PanelItem{
             radius=1;
             color3f =c;
 
+            cbox.setText("Habilitar luz ambiental");
             light = new AmbientLight();
             initLight();
             light.setColor(color3f);
@@ -264,7 +279,7 @@ public class Iluminacion extends PanelItem{
             super();
             radius=1;
             color3f = c;
-
+            cbox.setText("Habilitar luz direccional");
             light = new DirectionalLight();
             initLight();
             light.setColor(color3f);
@@ -296,6 +311,7 @@ public class Iluminacion extends PanelItem{
 
             color3f = c;
 
+            cbox.setText("Habilitar punto de luz");
             light = new PointLight();
             light.setEnable(false);
             initLight();

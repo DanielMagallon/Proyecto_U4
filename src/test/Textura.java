@@ -46,7 +46,7 @@ public class Textura extends JFrame{
 	public BranchGroup crearescena(){
 		BranchGroup objraiz=new BranchGroup();
 
-		URL urlF = getClass().getResource("/test/fondo.jpg");
+		URL urlF = getClass().getResource("/test/dark.png");
 		ImageComponent2D imgf = cargar(urlF);
 		Background F = new Background(imgf);
 		BoundingSphere limite = new BoundingSphere();
@@ -61,8 +61,8 @@ public class Textura extends JFrame{
         texture2D.setImage(0,im1);
         texture2D.setEnable(true);
         Appearance appearance = new Appearance();
-        appearance.setColoringAttributes(new ColoringAttributes(new Color3f(0,0,1),
-                ColoringAttributes.SHADE_GOURAUD));
+//        appearance.setColoringAttributes(new ColoringAttributes(new Color3f(0,0,1),
+//                ColoringAttributes.SHADE_GOURAUD));
         appearance.setPolygonAttributes(new PolygonAttributes(
                 PolygonAttributes.POLYGON_FILL,PolygonAttributes.CULL_NONE,0
         ));

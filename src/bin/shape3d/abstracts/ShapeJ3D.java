@@ -4,6 +4,8 @@ package bin.shape3d.abstracts;
 import LabelFace.LabelFace;
 import com.sun.j3d.utils.geometry.GeometryInfo;
 import com.sun.j3d.utils.geometry.NormalGenerator;
+import com.sun.j3d.utils.geometry.Primitive;
+import com.sun.j3d.utils.image.TextureLoader;
 import main.Run;
 import panes.items.Iluminacion;
 import static_props.AppProps;
@@ -11,10 +13,12 @@ import static_props.ImageLoader;
 
 import javax.media.j3d.*;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.vecmath.*;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -82,6 +86,36 @@ public class ShapeJ3D
             new Point3d(.20,-.30,-.06)//L' 23
 
     };
+
+    Point3f verticesf[]= {
+            new Point3f(-.20f,.30f,.06f), //A 0
+            new Point3f(.20f,.30f,.06f),//B 1
+            new Point3f(.20f,.18f,.06f),//c 2
+            new Point3f(-.10f,.18f,.06f),//D 3
+            new Point3f(-.10f,.06f,.06f),//E 4
+            new Point3f(.15f,.06f,.06f),//F 5
+            new Point3f(-.10f,-.06f,.06f),//G 6
+            new Point3f(.15f,-.06f,.06f),//H 7
+            new Point3f(-.20f,-.30f,.06f),//I 8
+            new Point3f(-.10f,-.18f,.06f),//J 9
+            new Point3f(.20f,-.18f,.06f),//K 10
+            new Point3f(.20f,-.30f,.06f),//L 11
+            new Point3f(-.20f,.30f,-.06f),//A' 12
+            new Point3f(.20f,.30f,-.06f),//B' 13
+            new Point3f(.20f,.18f,-.06f),//C' 14
+            new Point3f(-.10f,.18f,-.06f),//D' 15
+            new Point3f(-.10f,.06f,-.06f),//E' 16
+            new Point3f(.15f,.06f,-.06f),//F' 17
+            new Point3f(-.10f,-.06f,-.06f),//G' 18
+            new Point3f(.15f,-.06f,-.06f),//H' 19
+            new Point3f(-.20f,-.30f,-.06f),//I' 20
+            new Point3f(-.10f,-.18f,-.06f),//J' 21
+            new Point3f(.20f,-.18f,-.06f),//K' 22
+            new Point3f(.20f,-.30f,-.06f)//L' 23
+
+    };
+
+
 
     int secuencia[]= {0,1,2,3,4,5,7,6,9,10,11,8,   12,13,14,15,16,17,19,18,21,22,23,20, 0,1,13,12,
             0,8,20,12,  8,11,23,20, 10,11,23,22, 9,10,22,21, 6,9,21,18,  6,7,19,18,
@@ -151,7 +185,7 @@ public class ShapeJ3D
         jpanel.add(lbl);
     }
 
-    private JButton btnCanc,btnAplicarTodo;
+    private JButton btnCanc,btnAplicarTodo, remText;
     private JCheckBox cbox;
 
     public JPanel getPanelColor(){
@@ -181,7 +215,7 @@ public class ShapeJ3D
             cbox.setEnabled(true);
         });
 
-        cbox = new JCheckBox("Camibar colores");
+        cbox = new JCheckBox("Cambiar colores");
         cbox.setForeground(AppProps.FG_NORMAL_TEXT);
         cbox.setOpaque(false);
 
@@ -189,9 +223,73 @@ public class ShapeJ3D
         jpanel.add(btnCanc);
         jpanel.add(cbox);
         colorList.keySet().forEach(this::addLblColor);
+        JSeparator sep = new JSeparator(JSeparator.VERTICAL);
+        sep.setBackground(Color.white);
+        jpanel.add(sep);
+
+        JButton apliarTexturaImagen = new JButton("Textura imagen");
+        apliarTexturaImagen.setBackground(AppProps.BG_SELECTED);
+        apliarTexturaImagen.setForeground(AppProps.FG_NORMAL_TEXT);
+        apliarTexturaImagen.addActionListener(a->{
+            if(fileChooser.showDialog(null,"Seleccione imagen")==JFileChooser.APPROVE_OPTION){
+                if(createTexture(fileChooser.getSelectedFile()));
+                    remText.setEnabled(true);
+
+            }
+        });
+
+        remText = new JButton("Remover textura");
+        remText.setBackground(AppProps.BG_SELECTED);
+        remText.setForeground(AppProps.FG_NORMAL_TEXT);
+        remText.addActionListener(a->{
+            texturaImage=false;
+            updateShapeColor();
+            remText.setEnabled(false);
+        });
+        remText.setEnabled(false);
+
+
+        jpanel.add(apliarTexturaImagen);
+        jpanel.add(remText);
 
         return jpanel;
     }
+
+    Texture2D texture2D;
+    private boolean createTexture(File file){
+        texturaImage = true;
+        ImageComponent2D im1 = null;
+        try {
+            im1 = cargar(file);
+        } catch (MalformedURLException e) {
+            return false;
+        }
+        texture2D = new Texture2D(Texture2D.BASE_LEVEL,
+                Texture.RGB,im1.getWidth(),im1.getHeight());
+//        texture2D.setBoundaryModeS(Texture2D.CLAMP_TO_EDGE);
+//        texture2D.setBoundaryModeT(Texture2D.CLAMP_TO_EDGE);
+        texture2D.setImage(0,im1);
+        texture2D.setEnable(true);
+        updateShapeColor();
+        return true;
+    }
+
+    ImageComponent2D cargar(File url) throws MalformedURLException {
+//        TextureAttributes texAttr = new TextureAttributes();
+
+//        appearance.setTextureAttributes(texAttr);
+        TextureLoader textureLoader ;
+            textureLoader = new TextureLoader(url.toURI().toURL(), Run.canvas3D);
+            return textureLoader.getImage();
+    }
+
+    private boolean texturaImage;
+    private JFileChooser fileChooser = new JFileChooser();
+    {
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Imagenes",
+                "png","PNG","jpeg","jpg","JPG","JPEG"));
+    }
+    public Background backgroundGlobal;
 
     public BranchGroup getBranchGroup()
     {
@@ -204,31 +302,36 @@ public class ShapeJ3D
         trasnformRotator.rotY(rotY);
 
         tgr.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-//        Alpha tiempo=new Alpha(-1, 3200);
-//        rot = new RotationInterpolator(tiempo,tgr);
-//        rot.setTransformAxis(trasnformRotator);
+        Alpha tiempo=new Alpha(-1, 10000);
+        rot = new RotationInterpolator(tiempo,tgr);
+        rot.setTransformAxis(trasnformRotator);
         BoundingSphere limite= new BoundingSphere();
-//        rot.setSchedulingBounds(limite);
-//        tgr.addChild(rot);
+        rot.setSchedulingBounds(limite);
+        tgr.addChild(rot);
 
         {
             appearance = new Appearance();
             appearance.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
             appearance.setCapability(Appearance.ALLOW_MATERIAL_WRITE);
+            appearance.setCapability(Appearance.ALLOW_TEXTURE_WRITE);
+            appearance.setCapability(Appearance.ALLOW_TEXTURE_ATTRIBUTES_WRITE);
             Material mat=new Material();
             appearance.setMaterial(mat);
         }
 
 
         shape3D = new Shape3D();
+        shape3D.setCapability(Shape3D.ALLOW_APPEARANCE_OVERRIDE_WRITE);
         shape3D.setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);
+        shape3D.setAppearanceOverrideEnable(true);
         updateShapeColor();
         tgr.addChild(shape3D);
 
 
-        Background background = new Background(.2f,.2f,.2f);
-        background.setApplicationBounds(limite);
-        objraiz.addChild(background);
+        backgroundGlobal = new Background(.2f,.2f,.2f);
+        backgroundGlobal.setApplicationBounds(limite);
+        backgroundGlobal.setCapability(Background.ALLOW_COLOR_WRITE);
+        objraiz.addChild(backgroundGlobal);
 
         transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
         transformGroup.addChild(tgr);
@@ -254,12 +357,7 @@ public class ShapeJ3D
 
         }
 
-//        NormalGenerator normalGenerator = new NormalGenerator();
-//        normalGenerator.generateNormals(geometryInfo);
 
-        geometryInfo.setCoordinates(vertices);
-        geometryInfo.setCoordinateIndices(secuencia);
-        geometryInfo.setStripCounts(tiras);
         Color3f[] cols = new Color3f[colorList.size()];
         AtomicInteger ind= new AtomicInteger();
 
@@ -267,6 +365,23 @@ public class ShapeJ3D
         colorList.keySet().forEach(key->{
                   cols[ind.getAndIncrement()] = colorList.get(key);
         });
+
+        appearance.setPolygonAttributes(new PolygonAttributes(
+                filled ? PolygonAttributes.POLYGON_FILL : PolygonAttributes.POLYGON_LINE,
+                PolygonAttributes.CULL_NONE,0));
+
+        geometryInfo.setCoordinates(vertices);
+        geometryInfo.setCoordinateIndices(secuencia);
+        geometryInfo.setStripCounts(tiras);
+        if(texturaImage){
+            geometryInfo.setTextureCoordinates(verticesf);
+            geometryInfo.setTextureCoordinateIndices(secuencia);
+            appearance.setTexture(texture2D);
+
+        }else{
+
+            appearance.setTexture(null);
+        }
 
         geometryInfo.setColors(cols);
         geometryInfo.setColorIndices(secColor);
@@ -276,12 +391,6 @@ public class ShapeJ3D
             NG.generateNormals(geometryInfo);
         }
         shape3D.setGeometry(geometryInfo.getGeometryArray());
-
-        appearance.setPolygonAttributes(new PolygonAttributes(
-                filled ? PolygonAttributes.POLYGON_FILL : PolygonAttributes.POLYGON_LINE,
-                PolygonAttributes.CULL_NONE,0));
-
-
     }
 
     public void mover(int coord, float val){

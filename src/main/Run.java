@@ -4,7 +4,6 @@ import LabelFace.LabelFace;
 import bin.shape3d.abstracts.ShapeJ3D;
 import frame.DefaultFrame;
 import modals.*;
-import modals.NotifyImage;
 import panes.CanvasJ3D;
 import panes.FaceProperties;
 import panes.PanelItem;
@@ -18,7 +17,6 @@ import javax.swing.border.Border;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 
 public class Run
 {
@@ -27,12 +25,8 @@ public class Run
     private static Help modalHelp;
     private static Autores modalAutor;
     public static CanvasJ3D canvas3D;
-//    public static Figura3D figura3D;
-
-    public static NotifyImage notifyImage;
 
     public static boolean exportImage, showViews;
-    public static BufferedImage bufferedImage;
     public static Rotacion panelRotacion = new Rotacion();
     public static Escalamiento escalamiento = new Escalamiento();
     public static Traslacion traslacion = new Traslacion();
@@ -41,7 +35,6 @@ public class Run
     public static Caras caras;
     public static FaceProperties faceProperties = new FaceProperties();
 
-    public static JLabel seleccionpane=new JLabel("Ver vistas");
     public static JLabel seleccionayuda=new JLabel("  AYUDA  ");
     public static JLabel seleccionautor=new JLabel("  AUTORES  ");
 
@@ -73,32 +66,8 @@ public class Run
             	 modalAutor.setVisible(true);
             }
         });
-        
-        seleccionpane.setCursor(AppProps.handCursor);
-        seleccionpane.setForeground(Color.black);
-        seleccionpane.addMouseListener( new MouseAdapter() {
-
-            public void mouseClicked(MouseEvent e) {
-
-                if(!showViews) {
-                    seleccionpane.setText("Ver Dibujos");
-                    seleccionpane.setForeground(AppProps.BG_CONTORNO);
-                    frame.getContentPane().remove(canvas3D);
-                }else {
-                    seleccionpane.setText("Ver vistas");
-                    seleccionpane.setForeground(Color.black);
-                    frame.getContentPane().add(canvas3D);
-
-                }
-                frame.getContentPane().validate();
-                frame.getContentPane().repaint();
-                showViews=!showViews;
-            }
-        });
-
 
         iluminacion = new Iluminacion();
-
 
         canvas3D = new CanvasJ3D();
         canvas3D.addMouseListener(new MouseAdapter() {
@@ -114,7 +83,6 @@ public class Run
         panelMenus = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0))
         {{
             setOpaque(false);
-            add(seleccionpane);
             add(new PanelMenu(panelRotacion,"Rotaciones",true));
             add(new PanelMenu(escalamiento,"Escalamiento"));
             add(new PanelMenu(traslacion,"Traslacion"));
@@ -138,7 +106,9 @@ public class Run
         frame.getContentPane().add(panel,"North");
 
         frame.getContentPane().add(canvas3D);
-        frame.getContentPane().add(colores,"South");
+        JScrollPane sc = new JScrollPane(colores);
+        sc.getViewport().setOpaque(false);
+        frame.getContentPane().add(sc,"South");
 
 //        help = new Help(frame,true);
 
@@ -157,8 +127,6 @@ public class Run
     public static void init(){
         frame = new DefaultFrame("Proyecto U4 -- Java 3D").minSize(730,630);
         initPanelItems();
-//        figura3D = new Figura3D();
-        notifyImage = new NotifyImage(frame);
         modalHelp = new Help(frame,true);
         modalAutor = new Autores(frame,true);
         frame.setVisible(true);

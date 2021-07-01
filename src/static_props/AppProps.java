@@ -13,7 +13,6 @@ public class AppProps
     public static final int COORD_X =0, COORD_Y =1, COORD_Z =2;
 
     public static Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
-    public static Cursor areaSelect = new Cursor(Cursor.CROSSHAIR_CURSOR);
 
     public static Color BG_GLOBAL = new Color(0xD2D0D0);
     public static Color BG_SELECTED = new Color(0x382B2B);
@@ -22,31 +21,8 @@ public class AppProps
     public static Color BG_NOT_SELECTED = null;
 
     public static Color CANVAS_BG = new Color(0x382B2B);
-    public static Color CANVAS_STROKE = new Color(0x000000);
-
-
-    public static Color BG_NOTIFY = new Color(0x292963);
-    public static Color BG_BTN_NOTIFY = new Color(0x3C3CCD);
 
     public static Color FG_NORMAL_TEXT = new Color(0xFFFFFF);
-
-    public static JLabel createLabelFor(String text, LabelHandler handler)
-    {
-        JLabel lbl = new JLabel(text);
-
-        lbl.setHorizontalAlignment(JLabel.CENTER);
-        lbl.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent mouseEvent) {
-                handler.labelCallback(
-                        (JLabel) mouseEvent.getComponent()
-                );
-            }
-
-        });
-        lbl.setForeground(FG_NORMAL_TEXT);
-        return lbl;
-    }
 
     public static JLabel createLabelFor(String text, LabelHandler handler,LabelHandler onEnteredHandler)
     {

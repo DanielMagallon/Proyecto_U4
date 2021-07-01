@@ -11,21 +11,9 @@ import javax.swing.ImageIcon;
 
 public class ImageLoader {
 
-    public static ImageIcon escposiDI = getImageIcon("material/escposi36px.png");
-    public static ImageIcon escposiRI= getImageIcon("material/escposi26px.png");
-
-    public static ImageIcon escseleciDI = getImageIcon("material/escseleci36px.png");
-    public static ImageIcon escseleciRI = getImageIcon("material/escseleci26px.png");
-    
     public static ImageIcon paintDI = getImageIcon("material/paint36px.png");
     public static ImageIcon paintRI = getImageIcon("material/paint26px.png");
 
-    public static ImageIcon reset = getImageIcon("material/restaurar36px.png");
-    public static ImageIcon resetR = getImageIcon("material/restaurar26px.png");
-
-    public static Cursor removeCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-                getSprite("cursors/delete.png"),new Point(0,0),"Remove"
-            );
     public static Cursor fillCorrectCursor = Toolkit.getDefaultToolkit().createCustomCursor(
             getSprite("cursors/fillCorr.png"),new Point(0,0),"Remove"
     );

@@ -18,6 +18,8 @@ public class Iluminacion extends JFrame{
     DirectionalLight directionalLight;
     PointLight pointLight;
 
+
+
 	public Iluminacion(){
 		setTitle("Programa en java3d");
 		setSize(800,600);
