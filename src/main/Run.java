@@ -36,6 +36,7 @@ public class Run
     public static Rotacion panelRotacion = new Rotacion();
     public static Escalamiento escalamiento = new Escalamiento();
     public static Traslacion traslacion = new Traslacion();
+    public static Iluminacion iluminacion;
     public static Colores colores;
     public static Caras caras;
     public static FaceProperties faceProperties = new FaceProperties();
@@ -95,6 +96,10 @@ public class Run
             }
         });
 
+
+        iluminacion = new Iluminacion();
+
+
         canvas3D = new CanvasJ3D();
         canvas3D.addMouseListener(new MouseAdapter() {
             @Override
@@ -113,7 +118,7 @@ public class Run
             add(new PanelMenu(panelRotacion,"Rotaciones",true));
             add(new PanelMenu(escalamiento,"Escalamiento"));
             add(new PanelMenu(traslacion,"Traslacion"));
-//            add(new PanelMenu(colores,"Colores"));
+            add(new PanelMenu(iluminacion,"Iluminacion"));
             add(new PanelMenu(caras,"Caras"));
             add(new PanelMenu(configuracion,"Configuracion"));
             add(seleccionayuda);
@@ -165,7 +170,8 @@ public class Run
     private static LabelFace auxFace;
 
     public static void updateColorsFace(){
-        faceProperties.showFaceProps(auxFace);
+        if(auxFace!=null)
+            faceProperties.showFaceProps(auxFace);
     }
 
     public static void faceHandler(LabelFace face)

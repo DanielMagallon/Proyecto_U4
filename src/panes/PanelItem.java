@@ -15,6 +15,7 @@ public abstract class PanelItem extends JPanel
 
     public PanelItem(LayoutManager layoutManager) {
         setLayout(layoutManager);
+        setBackground(AppProps.BG_SELECTED);
     }
 
     public PanelItem(int r, int c)

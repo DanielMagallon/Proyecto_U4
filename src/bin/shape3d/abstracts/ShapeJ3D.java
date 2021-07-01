@@ -5,6 +5,7 @@ import LabelFace.LabelFace;
 import com.sun.j3d.utils.geometry.GeometryInfo;
 import com.sun.j3d.utils.geometry.NormalGenerator;
 import main.Run;
+import panes.items.Iluminacion;
 import static_props.AppProps;
 import static_props.ImageLoader;
 
@@ -203,22 +204,24 @@ public class ShapeJ3D
         trasnformRotator.rotY(rotY);
 
         tgr.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-        Alpha tiempo=new Alpha(-1, 3200);
-        rot = new RotationInterpolator(tiempo,tgr);
-        rot.setTransformAxis(trasnformRotator);
+//        Alpha tiempo=new Alpha(-1, 3200);
+//        rot = new RotationInterpolator(tiempo,tgr);
+//        rot.setTransformAxis(trasnformRotator);
         BoundingSphere limite= new BoundingSphere();
-        rot.setSchedulingBounds(limite);
-        tgr.addChild(rot);
+//        rot.setSchedulingBounds(limite);
+//        tgr.addChild(rot);
 
         {
             appearance = new Appearance();
             appearance.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
+            appearance.setCapability(Appearance.ALLOW_MATERIAL_WRITE);
+            Material mat=new Material();
+            appearance.setMaterial(mat);
         }
 
 
         shape3D = new Shape3D();
         shape3D.setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);
-        shape3D.setAppearance(appearance);
         updateShapeColor();
         tgr.addChild(shape3D);
 
@@ -242,8 +245,10 @@ public class ShapeJ3D
     public static boolean filled=true;
     public void updateShapeColor(){
 
-        if(geometryInfo==null)
+        if(geometryInfo==null) {
             geometryInfo = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
+            shape3D.setAppearance(appearance);
+        }
         else {
             geometryInfo.reset(GeometryInfo.POLYGON_ARRAY);
 
@@ -265,6 +270,11 @@ public class ShapeJ3D
 
         geometryInfo.setColors(cols);
         geometryInfo.setColorIndices(secColor);
+
+        if(Iluminacion.isLigth()) {
+            NormalGenerator NG = new NormalGenerator();
+            NG.generateNormals(geometryInfo);
+        }
         shape3D.setGeometry(geometryInfo.getGeometryArray());
 
         appearance.setPolygonAttributes(new PolygonAttributes(

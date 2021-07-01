@@ -109,7 +109,7 @@ public class Iluminacion2 extends JFrame implements ItemListener{
 		ambiental = new AmbientLight(color);
 		ambiental.setCapability(AmbientLight.ALLOW_STATE_WRITE);
 		ambiental.setCapability(AmbientLight.ALLOW_COLOR_WRITE);
-		BoundingSphere limite =new BoundingSphere(new Point3d(0,0,0),1);
+		BoundingSphere limite = new BoundingSphere(new Point3d(0,0,0),1);
 		ambiental.setInfluencingBounds(limite);
 		ambiental.setEnable(false);
 		
@@ -119,6 +119,7 @@ public class Iluminacion2 extends JFrame implements ItemListener{
 	public void ponerLuzDireccional(Color3f color,Vector3f ubic,BranchGroup raiz) {
 		BoundingSphere limite =new BoundingSphere(new Point3d(0,0,0),1);
 		luzd= new DirectionalLight(false, color,ubic);
+
 		luzd.setInfluencingBounds(limite);
 		luzd.setCapability(DirectionalLight.ALLOW_STATE_WRITE);
         luzd.setCapability(DirectionalLight.ALLOW_COLOR_WRITE);
@@ -128,7 +129,7 @@ public class Iluminacion2 extends JFrame implements ItemListener{
 		pluz = new PointLight(color,pos,at);
 		pluz.setCapability(PointLight.ALLOW_STATE_WRITE);
         pluz.setCapability(PointLight.ALLOW_COLOR_WRITE);
-		BoundingSphere limite =new BoundingSphere(new Point3d(0,0,0),1);
+		BoundingSphere limite =new BoundingSphere(new Point3d(0.4,0.3,0),1);
 		pluz.setInfluencingBounds(limite);
 		pluz.setEnable(false);
 		raiz.addChild(pluz);
@@ -185,13 +186,13 @@ public class Iluminacion2 extends JFrame implements ItemListener{
 				//Aparencia con poligino relleno
 				Appearance ap= new Appearance();
 				ap.setColoringAttributes(new ColoringAttributes(color, ColoringAttributes.SHADE_GOURAUD));
-				ap.setPolygonAttributes(new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0));
-				Material mat=new Material();
-				ap.setMaterial(mat);
-				
-				NormalGenerator NG = new NormalGenerator();
-				NG.generateNormals(Gi);
-				Shape3D Sp= new Shape3D(Gi.getGeometryArray(),ap);
+        ap.setPolygonAttributes(new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0));
+        Material mat=new Material();
+        ap.setMaterial(mat);
+
+        NormalGenerator NG = new NormalGenerator();
+        NG.generateNormals(Gi);
+        Shape3D Sp= new Shape3D(Gi.getGeometryArray(),ap);
 				
 				//Sphere Sp = new Sphere(tam,Sphere.GENERATE_NORMALS,50,ap);
 				Transform3D pos= new Transform3D();

@@ -1,8 +1,6 @@
 package static_props;
 
-import LabelFace.LabelFace;
 import bin.handlers.LabelHandler;
-import panes.PanelItem;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -31,6 +29,24 @@ public class AppProps
     public static Color BG_BTN_NOTIFY = new Color(0x3C3CCD);
 
     public static Color FG_NORMAL_TEXT = new Color(0xFFFFFF);
+
+    public static JLabel createLabelFor(String text, LabelHandler handler)
+    {
+        JLabel lbl = new JLabel(text);
+
+        lbl.setHorizontalAlignment(JLabel.CENTER);
+        lbl.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                handler.labelCallback(
+                        (JLabel) mouseEvent.getComponent()
+                );
+            }
+
+        });
+        lbl.setForeground(FG_NORMAL_TEXT);
+        return lbl;
+    }
 
     public static JLabel createLabelFor(String text, LabelHandler handler,LabelHandler onEnteredHandler)
     {

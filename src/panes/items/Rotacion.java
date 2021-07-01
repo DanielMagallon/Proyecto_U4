@@ -5,8 +5,6 @@ import panes.PanelItem;
 import static_props.AppProps;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 
 import static static_props.AppProps.COORD_X;

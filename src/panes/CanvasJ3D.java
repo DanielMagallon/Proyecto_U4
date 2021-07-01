@@ -3,6 +3,7 @@ package panes;
 import bin.handlers.SelecctionListener;
 import bin.shape3d.abstracts.ShapeJ3D;
 import com.sun.j3d.utils.universe.SimpleUniverse;
+import panes.items.Iluminacion;
 import static_props.AppProps;
 
 import javax.media.j3d.BranchGroup;
@@ -111,6 +112,9 @@ public class CanvasJ3D extends JPanel
         canvas=new Canvas3D(config);
         add(canvas,BorderLayout.CENTER);
         BranchGroup escena=shape3D.getBranchGroup();
+        escena.addChild(Iluminacion.panelAmbiente.castLigth());
+        escena.addChild(Iluminacion.panelDireccional.castLigth());
+        escena.addChild(Iluminacion.panelPuntoLuz.castLigth());
         escena.compile();
         SimpleUniverse su=new SimpleUniverse(canvas);
         su.getViewingPlatform().setNominalViewingTransform();
