@@ -229,10 +229,11 @@ public class Iluminacion extends PanelItem{
             cbox.addChangeListener(c->
              {
                  light.setEnable(cbox.isSelected());
-
+                
              }
 
             );
+            
             limite = new BoundingSphere();
          }
 
@@ -259,7 +260,7 @@ public class Iluminacion extends PanelItem{
             light = new AmbientLight();
             initLight();
             light.setColor(color3f);
-
+            castLigth().setEnable(false);
             limite.setCenter(new Point3d(xpoint,ypoint,zpoint));
             limite.setRadius(radius);
 
@@ -283,7 +284,7 @@ public class Iluminacion extends PanelItem{
             light = new DirectionalLight();
             initLight();
             light.setColor(color3f);
-
+            castLigth().setEnable(false);
             xdir = -.5f;
             direction = new Vector3f(xdir,ydir,zdir);
             castLigth().setDirection(direction);
@@ -310,12 +311,12 @@ public class Iluminacion extends PanelItem{
             ypoint=0.3;
 
             color3f = c;
-
+            
             cbox.setText("Habilitar punto de luz");
             light = new PointLight();
             light.setEnable(false);
             initLight();
-
+            castLigth().setEnable(false);
             positionPoint = new Point3f(-0.3f,-0.3f,0);
             attenuattionPoint = new Point3f(1,0,0);
 
