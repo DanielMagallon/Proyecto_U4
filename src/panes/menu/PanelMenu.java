@@ -41,7 +41,7 @@ public class PanelMenu extends JPanel
         }
     }
 
-    private void updateSelection()
+    public void updateSelection()
     {
         if(auxPanel !=null){
             auxPanel.lblMenu.setForeground(Color.black);

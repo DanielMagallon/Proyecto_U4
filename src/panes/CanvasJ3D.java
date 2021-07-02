@@ -11,7 +11,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 
 import static main.Run.*;
 
@@ -22,7 +21,6 @@ public class CanvasJ3D extends JPanel
 	 */
 	private static final long serialVersionUID = 1L;
     public ShapeJ3D shape3D;
-    private boolean arrastrar=false,firstTime=true;
 
     public CanvasJ3D() {
         setDoubleBuffered(true);
@@ -78,26 +76,27 @@ public class CanvasJ3D extends JPanel
 
     private void create3D()
     {
-        GraphicsConfiguration config= SimpleUniverse.getPreferredConfiguration();
-        canvas=new Canvas3D(config);
-        canvas.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if(ShapeJ3D.fillPoint){
-                    shape3D.backgroundGlobal.setColor(
-                            shape3D.colorList.get(ShapeJ3D.keyColor)
-                    );
+            GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
+            canvas = new Canvas3D(config);
+            canvas.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (ShapeJ3D.fillPoint) {
+                        shape3D.backgroundGlobal.setColor(
+                                shape3D.colorList.get(ShapeJ3D.keyColor)
+                        );
+                    }
                 }
-            }
-        });
-        add(canvas,BorderLayout.CENTER);
-        BranchGroup escena=shape3D.getBranchGroup();
-        escena.addChild(Iluminacion.panelAmbiente.castLigth());
-        escena.addChild(Iluminacion.panelDireccional.castLigth());
-        escena.addChild(Iluminacion.panelPuntoLuz.castLigth());
-        escena.compile();
-        SimpleUniverse su=new SimpleUniverse(canvas);
-        su.getViewingPlatform().setNominalViewingTransform();
-        su.addBranchGraph(escena);
+            });
+            add(canvas, BorderLayout.CENTER);
+            BranchGroup escena = shape3D.getBranchGroup();
+            escena.addChild(Iluminacion.panelAmbiente.castLigth());
+            escena.addChild(Iluminacion.panelDireccional.castLigth());
+            escena.addChild(Iluminacion.panelPuntoLuz.castLigth());
+            escena.compile();
+            SimpleUniverse su = new SimpleUniverse(canvas);
+            su.getViewingPlatform().setNominalViewingTransform();
+            su.addBranchGraph(escena);
+
     }
 }

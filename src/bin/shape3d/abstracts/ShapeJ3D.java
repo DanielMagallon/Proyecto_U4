@@ -124,6 +124,7 @@ public class ShapeJ3D
 
     int tiras[]={12,12,4,4,4,4,4,4,4,4,4,4,4,4};
 
+    public LabelFace labelMain;
 
     public JPanel caraspanel(){
         JPanel panel = new JPanel(new FlowLayout());
@@ -132,6 +133,9 @@ public class ShapeJ3D
         for (int i = 0; i < tiras.length; i++) {
             LabelFace label = new LabelFace("Cara "+(i+1),it -> Run.faceHandler((LabelFace) it),
                     inicio,tiras[i]+inicio-1);
+            if(labelMain==null){
+                labelMain=label;
+            }
             inicio+=tiras[i];
             label.setBorder(BorderFactory.createEmptyBorder(3,10,3,10));
             panel.add(label);
@@ -169,6 +173,8 @@ public class ShapeJ3D
                 btnAplicarTodo.setEnabled(true);
                 btnCanc.setEnabled(true);
                 keyColor = Integer.parseInt(label.getName());
+                if(Run.faceProperties.closed)
+                    Run.faceHandler(labelMain);
             }
         },labelHander->{
             if(cbox.isSelected()){
@@ -266,8 +272,6 @@ public class ShapeJ3D
         }
         texture2D = new Texture2D(Texture2D.BASE_LEVEL,
                 Texture.RGB,im1.getWidth(),im1.getHeight());
-//        texture2D.setBoundaryModeS(Texture2D.CLAMP_TO_EDGE);
-//        texture2D.setBoundaryModeT(Texture2D.CLAMP_TO_EDGE);
         texture2D.setImage(0,im1);
         texture2D.setEnable(true);
         updateShapeColor();
@@ -275,9 +279,6 @@ public class ShapeJ3D
     }
 
     ImageComponent2D cargar(File url) throws MalformedURLException {
-//        TextureAttributes texAttr = new TextureAttributes();
-
-//        appearance.setTextureAttributes(texAttr);
         TextureLoader textureLoader ;
             textureLoader = new TextureLoader(url.toURI().toURL(), Run.canvas3D);
             return textureLoader.getImage();
@@ -302,7 +303,7 @@ public class ShapeJ3D
         trasnformRotator.rotY(rotY);
 
         tgr.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-        Alpha tiempo=new Alpha(-1, 10000);
+        Alpha tiempo=new Alpha(-1, 5000);
         rot = new RotationInterpolator(tiempo,tgr);
         rot.setTransformAxis(trasnformRotator);
         BoundingSphere limite= new BoundingSphere();

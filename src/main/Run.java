@@ -110,11 +110,8 @@ public class Run
         sc.getViewport().setOpaque(false);
         frame.getContentPane().add(sc,"South");
 
-//        help = new Help(frame,true);
 
     }
-
-//    public static Help help;
 
     public static void updatePanelItem(PanelItem panelItem){
         panelMenuItem.removeAll();
@@ -155,6 +152,12 @@ public class Run
     }
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(Run::init);
+        try{
+            EventQueue.invokeLater(Run::init);
+        }catch(Exception exception){
+            JOptionPane.showMessageDialog(null,exception.getMessage(),
+                    "Error en la ejecucion el programa\nContacte al desarrollador",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
